@@ -20,17 +20,20 @@ const app = express();
 app.use(express.json()); // JSON formatini tushunish uchun
 
 // CORS - Frontend bilan xatosiz bog'lanish uchun
-// origin qismiga keyinchalik Vercel bergan URL-ni qo'shib qo'yishing mumkin
+// Diqqat: Vercel URL manzilingni ham shu yerga qo'shib qo'ydim
 app.use(
   cors({
-    origin: "*", // Hozircha hamma joydan ruxsat, lekin deployda Vercel URL-ni yozish tavsiya etiladi
+    origin: [
+      "http://localhost:5173",
+      "https://hisobkitobuz.vercel.app", // Sening Vercel manziling
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
 
 // 5. API yo'nalishlarini (Route) ulaymiz
-// Frontend'dagi baseURL: "http://localhost:5000/api" ga moslangan
+// Frontend'dagi baseURL: "https://backendproject-5bg2.onrender.com/api" ga mos keladi
 app.use("/api/yem", yemRoutes);
 app.use("/api/moliya", moliyaRoutes);
 app.use("/api/admin", adminRoutes);
@@ -39,7 +42,9 @@ app.use("/api/admin", adminRoutes);
 app.get("/", (req, res) => {
   res
     .status(200)
-    .send("🚀 Qo'ychilik loyihasi Backend serveri muvaffaqiyatli ishlayapti!");
+    .send(
+      "🚀 Qo'ychilik loyihasi Backend serveri Render'da muvaffaqiyatli ishlayapti!",
+    );
 });
 
 // 7. Mavjud bo'lmagan API yo'llarini ushlash (404 Error Handling)
@@ -51,11 +56,11 @@ app.use((req, res) => {
 });
 
 // 8. Serverni ishga tushirish
-// Render PORT-ni o'zi avtomat beradi, shuning uchun process.env.PORT shart
+// Render PORT-ni o'zi avtomat beradi
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`✅ Server muvaffaqiyatli ishga tushdi!`);
-  console.log(`🌐 Manzil: http://localhost:${PORT}`);
+  console.log(`📡 Port: ${PORT}`);
   console.log(`📊 Baza: MongoDB ulandi.`);
 });
